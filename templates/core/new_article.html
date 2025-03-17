@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Nowy artykuł</h2>
+
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+</form>
+
+
+  <!-- Wczytanie stylów Quill -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <!-- Wczytanie skryptu Quill -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  
+  <script>
+    // Inicjalizacja edytora Quill na polu o id 'quill-editor'
+    var quill = new Quill('#quill-editor', {
+      theme: 'snow'
+    });
+
+    // Przed wysłaniem formularza, synchronizujemy treść edytora z polem textarea
+    var form = document.querySelector('form');
+    form.onsubmit = function() {
+      var contentInput = document.querySelector('textarea#quill-editor');
+      contentInput.value = quill.root.innerHTML;
+    };
+  </script>
+{% endblock %}

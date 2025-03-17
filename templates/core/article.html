@@ -1,0 +1,26 @@
+<a href="{% url 'article_detail' article.id %}" class="block hover:opacity-90 relative h-full bg-color-article-index shadow-lg rounded-lg p-4">
+  <div class="max-w-full mx-auto sm:max-h-96 h-full min-h-64 mb-4">
+    <div class="flex flex-col h-full justify-between mx-auto sm:max-w-none">
+      <div>
+        <div class="my-2 h-56 overflow-hidden">
+          {% if article.image %}
+    <img src="{{ article.image.url }}" alt="Artykuł" class="rounded w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-105">
+{% else %}
+    <img src="/static/images/article_image.jpg" alt="Artykuł" class="rounded w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-105">
+{% endif %}
+
+        </div>
+        <div class="my-3 text-lg text-slate-300 flex">
+          <strong class="ml-2">{{ article.title }}</strong>
+        </div>
+        <p class="text-gray-300">
+          {{ article.description }}
+        </p>
+      </div>
+      <p class="text-sm text-slate-400 mt-auto text-right">
+        <strong>{{ article.created_at|date:"d-m-Y" }}</strong>
+      </p>
+     
+    </div>
+  </div>
+</a>

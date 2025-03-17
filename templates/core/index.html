@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <p class="ml-4 border-b-2 border-dotted border-slate-500 mb-2">
+    Najnowsze artykuły:
+  </p>
+
+  <div id="articles" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {% for article in articles %}
+      {% include 'core/article.html' with article=article %}
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
