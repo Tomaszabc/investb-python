@@ -1,125 +1,114 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<div class="container py-4">
-  <div class="row justify-content-center">
-    <div class="col-lg-10">
-      <div class="card shadow border-0 rounded-lg">
-        <div class="card-header bg-gradient-primary text-white py-3">
-          <h2 class="mb-0 fs-4">Nowy artykuł</h2>
-        </div>
-        <div class="card-body p-4">
-          <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
-            {% csrf_token %}
-            
-            <div class="form-group mb-3">
-              <label for="id_title" class="form-label fw-bold">Tytuł:</label>
-              <input type="text" name="title" id="id_title" class="form-control form-control-lg" required>
-            </div>
-            
-            <div class="form-group mb-3">
-              <label for="id_description" class="form-label fw-bold">Opis:</label>
-              <textarea name="description" id="id_description" class="form-control" rows="4" required></textarea>
-            </div>
-            
-            <div class="form-group mb-4">
-              <label for="id_content" class="form-label fw-bold">Treść:</label>
-              <div id="toolbar-container" class="rounded-top border border-bottom-0">
-                <span class="ql-formats">
-                  <select class="ql-header">
-                    <option value="1">Nagłówek 1</option>
-                    <option value="2">Nagłówek 2</option>
-                    <option value="3">Nagłówek 3</option>
-                    <option selected>Normalny</option>
-                  </select>
-                </span>
-                <span class="ql-formats">
-                  <button class="ql-bold"></button>
-                  <button class="ql-italic"></button>
-                  <button class="ql-underline"></button>
-                  <button class="ql-strike"></button>
-                </span>
-                <span class="ql-formats">
-                  <select class="ql-color"></select>
-                  <select class="ql-background"></select>
-                </span>
-                <span class="ql-formats">
-                  <button class="ql-list" value="ordered"></button>
-                  <button class="ql-list" value="bullet"></button>
-                </span>
-                <span class="ql-formats">
-                  <button class="ql-link"></button>
-                  <button class="ql-image"></button>
-                </span>
-                <span class="ql-formats">
-                  <button class="ql-clean"></button>
-                </span>
-              </div>
-              <div id="quill-editor" class="border rounded-bottom" style="height: 300px; background-color: white;"></div>
-              <textarea name="content" id="id_content" style="display: none;"></textarea>
-            </div>
-            
-            <div class="form-group mb-4">
-              <label for="id_image" class="form-label fw-bold">Zdjęcie:</label>
-              <div class="input-group">
-                <input type="file" name="image" id="id_image" class="form-control" accept="image/*">
-                <label class="input-group-text" for="id_image">
-                  <i class="fas fa-upload me-2"></i>Wybierz plik
-                </label>
-              </div>
-              <div class="form-text">Dozwolone formaty: JPG, PNG, GIF</div>
-            </div>
-            
-            <div class="d-flex justify-content-between mt-4">
-              <a href="#" class="btn btn-outline-secondary px-4">
-                <i class="fas fa-arrow-left me-2"></i>Anuluj
-              </a>
-              <button type="submit" class="btn btn-primary px-5 py-2">
-                <i class="fas fa-save me-2"></i>Zapisz artykuł
-              </button>
-            </div>
-          </form>
-        </div>
+<!-- Główna sekcja z ciemnym tłem i jasnym tekstem -->
+<div class="min-h-screen bg-gray-900 text-gray-200 py-10 px-4">
+  <div class="max-w-4xl mx-auto">
+    <!-- Nagłówek strony -->
+    <h1 class="text-5xl font-bold mb-10 text-gray-100">Nowy artykuł</h1>
+    
+    <!-- Formularz -->
+    <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+      {% csrf_token %}
+      
+      <!-- Tytuł -->
+      <div class="mb-6">
+        <label for="id_title" class="block text-xl mb-2">Tytuł:</label>
+        <input type="text" name="title" id="id_title"
+               class="w-full bg-white text-gray-900 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+               required>
       </div>
-    </div>
+      
+      <!-- Opis -->
+      <div class="mb-6">
+        <label for="id_description" class="block text-xl mb-2">Opis:</label>
+        <textarea name="description" id="id_description" rows="4"
+                  class="w-full bg-white text-gray-900 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required></textarea>
+      </div>
+      
+      <!-- Treść (Quill) -->
+      <div class="mb-6">
+        <label for="id_content" class="block text-xl mb-2">Treść:</label>
+        
+        <!-- Pasek narzędzi Quill -->
+        <div id="toolbar-container" class="bg-gray-800 border border-gray-700 rounded-t p-2 mb-0">
+          <span class="ql-formats">
+            <select class="ql-header">
+              <option value="1">Nagłówek 1</option>
+              <option value="2">Nagłówek 2</option>
+              <option value="3">Nagłówek 3</option>
+              <option selected>Normalny</option>
+            </select>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-bold"></button>
+            <button class="ql-italic"></button>
+            <button class="ql-underline"></button>
+            <button class="ql-strike"></button>
+          </span>
+          <span class="ql-formats">
+            <select class="ql-color"></select>
+            <select class="ql-background"></select>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-list" value="ordered"></button>
+            <button class="ql-list" value="bullet"></button>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-link"></button>
+            <button class="ql-image"></button>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-clean"></button>
+          </span>
+        </div>
+        
+        <!-- Obszar edycji Quill -->
+        <div id="quill-editor" class="bg-gray-800 border border-gray-700 rounded-b p-4"
+             style="height: 300px; color: #fff;"></div>
+        
+        <!-- Ukryte pole textarea, do którego przeniesiemy treść z Quilla -->
+        <textarea name="content" id="id_content" class="hidden"></textarea>
+      </div>
+      
+      <!-- Zdjęcie -->
+      <div class="mb-6">
+        <label for="id_image" class="block text-xl mb-2">Zdjęcie:</label>
+        <div class="flex items-center">
+          <input type="file" name="image" id="id_image"
+                 class="bg-white text-gray-900 rounded-l-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 accept="image/*">
+          <label class="bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-3 rounded-r-lg cursor-pointer"
+                 for="id_image">
+            <i class="fas fa-upload mr-2"></i>Wybierz plik
+          </label>
+        </div>
+        <div class="text-sm text-gray-400 mt-1">Dozwolone formaty: JPG, PNG, GIF</div>
+      </div>
+      
+      <!-- Przycisk Anuluj i Zapisz -->
+      <div class="flex justify-between mt-8">
+        <a href="{% url 'index' %}" class="bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg">
+          <i class="fas fa-arrow-left mr-2"></i>Anuluj
+        </a>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-5 rounded-lg">
+          <i class="fas fa-save mr-2"></i>Zapisz artykuł
+        </button>
+      </div>
+    </form>
   </div>
 </div>
 
-<!-- Wczytanie stylów -->
-<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<!-- Font Awesome -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<!-- Quill CSS -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
-<style>
-  .bg-gradient-primary {
-    background: linear-gradient(to right, #4e73df, #224abe);
-  }
-  
-  .form-label {
-    margin-bottom: 0.5rem;
-  }
-  
-  .card {
-    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
-  }
-  
-  .ql-toolbar.ql-snow {
-    border-color: #d1d3e2;
-  }
-  
-  .ql-container.ql-snow {
-    border-color: #d1d3e2;
-  }
-  
-  .input-group-text {
-    cursor: pointer;
-  }
-</style>
-
-<!-- Wczytanie skryptów -->
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Inicjalizacja edytora Quill z własnym toolbarem
+  // Inicjalizacja edytora Quill
   var quill = new Quill('#quill-editor', {
     theme: 'snow',
     modules: {
@@ -128,22 +117,23 @@ document.addEventListener('DOMContentLoaded', function() {
     placeholder: 'Napisz treść artykułu...'
   });
   
-  // Przed wysłaniem formularza, synchronizujemy treść edytora z ukrytym polem textarea
-  var form = document.querySelector('form');
+  // Walidacja i synchronizacja treści Quill z ukrytym polem textarea
+  var form = document.querySelector('form.needs-validation');
   form.onsubmit = function() {
+    // Przeniesienie treści z Quill do textarea
     var contentField = document.querySelector('#id_content');
     contentField.value = quill.root.innerHTML;
     
-    // Podstawowa walidacja
+    // Prosta walidacja pól wymaganych
     var requiredFields = form.querySelectorAll('[required]');
     var valid = true;
     
     requiredFields.forEach(function(field) {
       if (!field.value.trim()) {
-        field.classList.add('is-invalid');
+        field.classList.add('border-red-500');
         valid = false;
       } else {
-        field.classList.remove('is-invalid');
+        field.classList.remove('border-red-500');
       }
     });
     
@@ -153,12 +143,12 @@ document.addEventListener('DOMContentLoaded', function() {
   // Podgląd nazwy wybranego pliku
   document.querySelector('#id_image').addEventListener('change', function(e) {
     var fileName = e.target.files[0]?.name || 'No file selected';
-    var nextSibling = e.target.nextElementSibling;
+    var label = e.target.nextElementSibling;
     
-    if (fileName != 'No file selected') {
-      nextSibling.innerHTML = '<i class="fas fa-file-image me-2"></i>' + fileName;
+    if (fileName !== 'No file selected') {
+      label.innerHTML = '<i class="fas fa-file-image mr-2"></i>' + fileName;
     } else {
-      nextSibling.innerHTML = '<i class="fas fa-upload me-2"></i>Wybierz plik';
+      label.innerHTML = '<i class="fas fa-upload mr-2"></i>Wybierz plik';
     }
   });
 });

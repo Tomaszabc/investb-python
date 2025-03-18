@@ -1,35 +1,174 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-  <h2>Edytuj artykuł: {{ article.title }}</h2>
+<!-- Główna sekcja z ciemnym tłem i jasnym tekstem -->
+<div class="min-h-screen bg-gray-900 text-gray-200 py-10 px-4">
+  <div class="max-w-4xl mx-auto">
+    <!-- Nagłówek strony -->
+    <h1 class="text-5xl font-bold mb-10 text-gray-100">
+      Edytuj artykuł: {{ article.title }}
+    </h1>
+    
+    <!-- Formularz -->
+    <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+      {% csrf_token %}
+      
+      <!-- Tytuł -->
+      <div class="mb-6">
+        <label for="id_title" class="block text-xl mb-2">Tytuł:</label>
+        <input type="text"
+               name="title"
+               id="id_title"
+               value="{{ article.title }}"
+               class="w-full bg-white text-gray-900 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+               required>
+      </div>
+      
+      <!-- Opis -->
+      <div class="mb-6">
+        <label for="id_description" class="block text-xl mb-2">Opis:</label>
+        <textarea name="description"
+                  id="id_description"
+                  rows="4"
+                  class="w-full bg-white text-gray-900 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required>{{ article.description }}</textarea>
+      </div>
+      
+      <!-- Treść (Quill) -->
+      <div class="mb-6">
+        <label for="id_content" class="block text-xl mb-2">Treść:</label>
+        
+        <!-- Pasek narzędzi Quill -->
+        <div id="toolbar-container" class="bg-gray-800 border border-gray-700 rounded-t p-2 mb-0">
+          <span class="ql-formats">
+            <select class="ql-header">
+              <option value="1">Nagłówek 1</option>
+              <option value="2">Nagłówek 2</option>
+              <option value="3">Nagłówek 3</option>
+              <option selected>Normalny</option>
+            </select>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-bold"></button>
+            <button class="ql-italic"></button>
+            <button class="ql-underline"></button>
+            <button class="ql-strike"></button>
+          </span>
+          <span class="ql-formats">
+            <select class="ql-color"></select>
+            <select class="ql-background"></select>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-list" value="ordered"></button>
+            <button class="ql-list" value="bullet"></button>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-link"></button>
+            <button class="ql-image"></button>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-clean"></button>
+          </span>
+        </div>
+        
+        <!-- Obszar edycji Quill -->
+        <div id="quill-editor" class="bg-gray-800 border border-gray-700 rounded-b p-4"
+             style="height: 300px; color: #fff;"></div>
+        
+        <!-- Ukryte pole textarea, do którego przeniesiemy treść z Quilla -->
+        <textarea name="content" id="id_content" class="hidden">{{ article.content|safe }}</textarea>
+      </div>
+      
+      <!-- Zdjęcie -->
+      <div class="mb-6">
+        <label for="id_image" class="block text-xl mb-2">Zdjęcie:</label>
+        <div class="flex items-center">
+          <!-- Pokazujemy aktualny plik, jeśli istnieje -->
+          {% if article.image %}
+            <p class="text-gray-400 mr-4">
+              Obecny plik: <span class="text-white">{{ article.image.name }}</span>
+            </p>
+          {% endif %}
+          <input type="file"
+                 name="image"
+                 id="id_image"
+                 class="bg-white text-gray-900 rounded-l-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 accept="image/*">
+          <label class="bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-3 rounded-r-lg cursor-pointer"
+                 for="id_image">
+            <i class="fas fa-upload mr-2"></i>Wybierz plik
+          </label>
+        </div>
+        <div class="text-sm text-gray-400 mt-1">Dozwolone formaty: JPG, PNG, GIF</div>
+      </div>
+      
+      <!-- Przycisk Anuluj i Zapisz -->
+      <div class="flex justify-between mt-8">
+        <a href="{% url 'index' %}" class="bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg">
+          <i class="fas fa-arrow-left mr-2"></i>Anuluj
+        </a>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-5 rounded-lg">
+          <i class="fas fa-save mr-2"></i>Zapisz zmiany
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
 
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
-    <a href="{% url 'index' %}" class="btn btn-secondary">Anuluj</a>
-  </form>
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<!-- Quill CSS -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
-  <!-- Wczytanie stylów Quill -->
-  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-  <!-- Wczytanie skryptu Quill -->
-  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-
-  <script>
-    // Inicjalizacja edytora Quill na polu o id 'quill-editor'
-    var quill = new Quill('#quill-editor', {
-      theme: 'snow'
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Inicjalizacja edytora Quill
+  var quill = new Quill('#quill-editor', {
+    theme: 'snow',
+    modules: {
+      toolbar: '#toolbar-container'
+    },
+    placeholder: 'Edytuj treść artykułu...'
+  });
+  
+  // Wypełnienie Quilla istniejącą treścią artykułu
+  var contentField = document.querySelector('#id_content');
+  quill.root.innerHTML = contentField.value.trim();
+  
+  // Walidacja i synchronizacja treści Quill z ukrytym polem textarea
+  var form = document.querySelector('form.needs-validation');
+  form.onsubmit = function() {
+    // Przeniesienie treści z Quill do textarea
+    contentField.value = quill.root.innerHTML;
+    
+    // Prosta walidacja pól wymaganych
+    var requiredFields = form.querySelectorAll('[required]');
+    var valid = true;
+    
+    requiredFields.forEach(function(field) {
+      if (!field.value.trim()) {
+        field.classList.add('border-red-500');
+        valid = false;
+      } else {
+        field.classList.remove('border-red-500');
+      }
     });
-
-    // Przed wysłaniem formularza, synchronizujemy treść edytora z polem textarea
-    var form = document.querySelector('form');
-    form.onsubmit = function() {
-      var contentInput = document.querySelector('textarea#quill-editor');
-      contentInput.value = quill.root.innerHTML;
-    };
-
-    // Wypełnij edytor Quill istniejącą treścią artykułu
-    var existingContent = document.querySelector('textarea#quill-editor').value;
-    quill.root.innerHTML = existingContent;
-  </script>
+    
+    return valid;
+  };
+  
+  // Podgląd nazwy wybranego pliku
+  document.querySelector('#id_image').addEventListener('change', function(e) {
+    var fileName = e.target.files[0]?.name || 'No file selected';
+    var label = e.target.nextElementSibling;
+    
+    if (fileName !== 'No file selected') {
+      label.innerHTML = '<i class="fas fa-file-image mr-2"></i>' + fileName;
+    } else {
+      label.innerHTML = '<i class="fas fa-upload mr-2"></i>Wybierz plik';
+    }
+  });
+});
+</script>
 {% endblock %}
