@@ -1,31 +1,166 @@
 {% extends 'base.html' %}
-
 {% block content %}
-  <h2>Nowy artykuł</h2>
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card shadow border-0 rounded-lg">
+        <div class="card-header bg-gradient-primary text-white py-3">
+          <h2 class="mb-0 fs-4">Nowy artykuł</h2>
+        </div>
+        <div class="card-body p-4">
+          <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            <div class="form-group mb-3">
+              <label for="id_title" class="form-label fw-bold">Tytuł:</label>
+              <input type="text" name="title" id="id_title" class="form-control form-control-lg" required>
+            </div>
+            
+            <div class="form-group mb-3">
+              <label for="id_description" class="form-label fw-bold">Opis:</label>
+              <textarea name="description" id="id_description" class="form-control" rows="4" required></textarea>
+            </div>
+            
+            <div class="form-group mb-4">
+              <label for="id_content" class="form-label fw-bold">Treść:</label>
+              <div id="toolbar-container" class="rounded-top border border-bottom-0">
+                <span class="ql-formats">
+                  <select class="ql-header">
+                    <option value="1">Nagłówek 1</option>
+                    <option value="2">Nagłówek 2</option>
+                    <option value="3">Nagłówek 3</option>
+                    <option selected>Normalny</option>
+                  </select>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-bold"></button>
+                  <button class="ql-italic"></button>
+                  <button class="ql-underline"></button>
+                  <button class="ql-strike"></button>
+                </span>
+                <span class="ql-formats">
+                  <select class="ql-color"></select>
+                  <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-list" value="ordered"></button>
+                  <button class="ql-list" value="bullet"></button>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-link"></button>
+                  <button class="ql-image"></button>
+                </span>
+                <span class="ql-formats">
+                  <button class="ql-clean"></button>
+                </span>
+              </div>
+              <div id="quill-editor" class="border rounded-bottom" style="height: 300px; background-color: white;"></div>
+              <textarea name="content" id="id_content" style="display: none;"></textarea>
+            </div>
+            
+            <div class="form-group mb-4">
+              <label for="id_image" class="form-label fw-bold">Zdjęcie:</label>
+              <div class="input-group">
+                <input type="file" name="image" id="id_image" class="form-control" accept="image/*">
+                <label class="input-group-text" for="id_image">
+                  <i class="fas fa-upload me-2"></i>Wybierz plik
+                </label>
+              </div>
+              <div class="form-text">Dozwolone formaty: JPG, PNG, GIF</div>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-4">
+              <a href="#" class="btn btn-outline-secondary px-4">
+                <i class="fas fa-arrow-left me-2"></i>Anuluj
+              </a>
+              <button type="submit" class="btn btn-primary px-5 py-2">
+                <i class="fas fa-save me-2"></i>Zapisz artykuł
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Zapisz</button>
-</form>
+<!-- Wczytanie stylów -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
-
-  <!-- Wczytanie stylów Quill -->
-  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-  <!-- Wczytanie skryptu Quill -->
-  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<style>
+  .bg-gradient-primary {
+    background: linear-gradient(to right, #4e73df, #224abe);
+  }
   
-  <script>
-    // Inicjalizacja edytora Quill na polu o id 'quill-editor'
-    var quill = new Quill('#quill-editor', {
-      theme: 'snow'
-    });
+  .form-label {
+    margin-bottom: 0.5rem;
+  }
+  
+  .card {
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+  }
+  
+  .ql-toolbar.ql-snow {
+    border-color: #d1d3e2;
+  }
+  
+  .ql-container.ql-snow {
+    border-color: #d1d3e2;
+  }
+  
+  .input-group-text {
+    cursor: pointer;
+  }
+</style>
 
-    // Przed wysłaniem formularza, synchronizujemy treść edytora z polem textarea
-    var form = document.querySelector('form');
-    form.onsubmit = function() {
-      var contentInput = document.querySelector('textarea#quill-editor');
-      contentInput.value = quill.root.innerHTML;
-    };
-  </script>
+<!-- Wczytanie skryptów -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Inicjalizacja edytora Quill z własnym toolbarem
+  var quill = new Quill('#quill-editor', {
+    theme: 'snow',
+    modules: {
+      toolbar: '#toolbar-container'
+    },
+    placeholder: 'Napisz treść artykułu...'
+  });
+  
+  // Przed wysłaniem formularza, synchronizujemy treść edytora z ukrytym polem textarea
+  var form = document.querySelector('form');
+  form.onsubmit = function() {
+    var contentField = document.querySelector('#id_content');
+    contentField.value = quill.root.innerHTML;
+    
+    // Podstawowa walidacja
+    var requiredFields = form.querySelectorAll('[required]');
+    var valid = true;
+    
+    requiredFields.forEach(function(field) {
+      if (!field.value.trim()) {
+        field.classList.add('is-invalid');
+        valid = false;
+      } else {
+        field.classList.remove('is-invalid');
+      }
+    });
+    
+    return valid;
+  };
+  
+  // Podgląd nazwy wybranego pliku
+  document.querySelector('#id_image').addEventListener('change', function(e) {
+    var fileName = e.target.files[0]?.name || 'No file selected';
+    var nextSibling = e.target.nextElementSibling;
+    
+    if (fileName != 'No file selected') {
+      nextSibling.innerHTML = '<i class="fas fa-file-image me-2"></i>' + fileName;
+    } else {
+      nextSibling.innerHTML = '<i class="fas fa-upload me-2"></i>Wybierz plik';
+    }
+  });
+});
+</script>
 {% endblock %}
